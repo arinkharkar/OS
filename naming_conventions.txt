@@ -1,0 +1,19 @@
+local variables - snake_case
+member variables of classes - snake_case
+member pointer variables - p_snake_case
+global variable - g_snake_case
+
+functions/methods - snake_case
+
+classes - PascalCase
+struct - PascalCase
+enums - PascalCase
+enum values - SCREAMING_SNAKE_CASE
+
+constexpr values - kPascalCase
+macro - SCREAMING_SNAKE_CASE
+
+namespaces - snake_case
+
+
+use constexpr when possible
