@@ -1,11 +1,14 @@
 #include <efi.h>
 #include <efilib.h>
 #include <fermion.h>
-
+#include "system/system.h"
 
 EXTERN_C EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
     
+    kernel::UEFI* uefi = new UEFI(ImageHandle, SystemTable);
+    kernel::System* system = new kernel::System();
+    system->initalize();
     EFI_STATUS Status;
     EFI_INPUT_KEY Key;
     

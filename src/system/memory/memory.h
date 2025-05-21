@@ -8,25 +8,11 @@ void* malloc(size_t size);
 void free(void* ptr);
 
 
-void* operator new(size_t size)
-{
-    return malloc(size);
-}
 
-void* operator new[](size_t size)
-{
-    return malloc(size);
-}
+class Memory {
 
-void operator delete(void *p)
-{
-    free(p);
-}
+};
 
-void operator delete[](void *p)
-{
-    free(p);
-}
 
 
 void* memset(void* ptr, int value, size_t num);

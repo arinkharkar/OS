@@ -102,9 +102,9 @@ inline Flags operator&(Flags a, Flags b) {
 class GDT {
 private:
     // the number of GDT entries we are using
-    const int num_gdt_entries = 3;
-    GdtDescriptor64* p_gdt_descriptor;
-    GdtSegment64* p_gdt_entries;
+    const int m_num_gdt_entries = 3;
+    GdtDescriptor64* m_pgdt_descriptor;
+    GdtSegment64* m_pgdt_entries;
 
     AccessByte create_access_byte(PermissionLevel permission_level, SegmentType segment_type, ReadWritePermissions permissions);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fstring.h>
+#include <fstring>
 #define EXTERN_C extern "C"
 
 // This just defines NORETURN so that it is standard between C and C++ and across compilers
@@ -18,6 +18,15 @@
 
 #ifdef __aarch64__
 #error "Fermion currently only supports x86_64, this compiler is currently using AARCH64 (arm64)"
+#endif
+
+#ifdef __x86_64__
+#define X86
+#define X86_64
+#endif
+
+#ifdef __aarch64
+#define ARM64
 #endif
 
 #if (defined(linux) || defined(__APPLE__) || defined(unix) || defined(__FreeBSD__)) && !defined(VSCODE)

@@ -4,10 +4,10 @@ namespace kernel {
 namespace gdt {
 
     GDT::GDT() {
-        p_gdt_descriptor = new GdtDescriptor64;
-        p_gdt_entries = new GdtSegment64[num_gdt_entries];
+        m_pgdt_descriptor = new GdtDescriptor64;
+        m_pgdt_entries = new GdtSegment64[m_num_gdt_entries];
         // if we cannot enable the GDT, we need to hang the CPU
-        if (p_gdt_descriptor == nullptr || p_gdt_entries == nullptr)
+        if (m_pgdt_descriptor == nullptr || m_pgdt_entries == nullptr)
             PANIC("Failed to Create GDT");
     }
     result GDT::enable() {
@@ -20,25 +20,25 @@ namespace gdt {
 
     result GDT::create_entry(int gdt_offset, size_t base, size_t limit, PermissionLevel permission_level, SegmentType segment_type, ReadWritePermissions permissions) {
         // if the offset is greater than the number of entries we initialized, error
-        if (gdt_offset >= num_gdt_entries)
+        if (gdt_offset >= m_num_gdt_entries)
             return result::result_error;
         if (base > limit)
             return result::result_error;
         // the limit value is 20 bits, this value needs to be bitshifted by 12
         limit = limit >> 12;
         /* set the base values*/
-        p_gdt_entries[gdt_offset].base_16_bits = (uint16_t)base;
-        p_gdt_entries[gdt_offset].base_8_bits = (uint8_t)(base >> 16);
-        p_gdt_entries[gdt_offset].base_last_bits = (uint8_t)(base >> 24);
+        m_pgdt_entries[gdt_offset].base_16_bits = (uint16_t)base;
+        m_pgdt_entries[gdt_offset].base_8_bits = (uint8_t)(base >> 16);
+        m_pgdt_entries[gdt_offset].base_last_bits = (uint8_t)(base >> 24);
 
         /* set the limit values */
-        p_gdt_entries[gdt_offset].limit_16_bits = (uint16_t)limit;
-        p_gdt_entries[gdt_offset].limit = (uint16_t)limit;
+        m_pgdt_entries[gdt_offset].limit_16_bits = (uint16_t)limit;
+        m_pgdt_entries[gdt_offset].limit = (uint16_t)limit;
 
 
-        p_gdt_entries[gdt_offset].access_byte = create_access_byte(permission_level, segment_type, permissions);
-        p_gdt_entries[gdt_offset].flags = 0;
-        p_gdt_entries[gdt_offset].flags = static_cast<uint8_t>(Flags::long_mode | Flags::granularity);
+        m_pgdt_entries[gdt_offset].access_byte = create_access_byte(permission_level, segment_type, permissions);
+        m_pgdt_entries[gdt_offset].flags = 0;
+        m_pgdt_entries[gdt_offset].flags = static_cast<uint8_t>(Flags::long_mode | Flags::granularity);
 
         return result::result_success;
     }
@@ -96,8 +96,8 @@ namespace gdt {
 
 
     GDT::~GDT() {
-        delete p_gdt_descriptor;
-        delete[] p_gdt_entries;
+        delete m_pgdt_descriptor;
+        delete[] m_pgdt_entries;
     }
 
 
