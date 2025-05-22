@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../cpu.h"
+#include "gdt.h"
 
 namespace kernel {
 
@@ -12,7 +13,13 @@ enum class DPL {
 };
 
 class X86CPU : public CPU {
-    void initialize() override;
+    gdt::GDT* m_pgdt;
+    X86CPU() {
+        m_pgdt = new gdt::GDT();
+    }
+    void initialize() override {
+        m_pgdt->enable();
+    }
 };
 
 

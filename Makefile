@@ -3,8 +3,9 @@
 # Compiler and flags
 CC = x86_64-w64-mingw32-gcc
 CXX=x86_64-w64-mingw32-g++
+ASM=x86_64-w64-mingw32-as
 LD=x86_64-w64-mingw32-gcc
-CFLAGS = -ffreestanding -I/usr/include/efi -I/usr/include/efi/x86_64 -Isrc/include -Isrc/stl -c
+CFLAGS = -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -I/usr/include/efi -I/usr/include/efi/x86_64 -Isrc/include -Isrc/stl -c
 LDFLAGS = -nostdlib -Wl,-dll -shared -Wl,--subsystem,10 -e efi_main
 
 # Paths

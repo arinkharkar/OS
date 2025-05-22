@@ -12,7 +12,7 @@ void* malloc(size_t c) {
     void* rVal = usedMemory;
     usedMemory += c;
     if (usedMemory >= &heap[HEAP_SIZE]) {
-        PANIC("ERROR: OUT OF HEAP SPACE");
+        kernel::PANIC("ERROR: OUT OF HEAP SPACE");
     }
     return rVal;
 }
@@ -23,7 +23,7 @@ void* calloc(size_t number, size_t size) {
     usedMemory += number * size;
 
     if (usedMemory >= &heap[HEAP_SIZE]) {
-        PANIC("ERROR: OUT OF HEAP SPACE");
+        kernel::PANIC("ERROR: OUT OF HEAP SPACE");
     }
     return rVal;
 }
@@ -32,12 +32,12 @@ void free(void* ptr) {}
 
 
 EXTERN_C void __cxa_throw_bad_array_new_length() {
-    PANIC("Exception: Invalid Length Specificied in new[]");
+    kernel::PANIC("Exception: Invalid Length Specificied in new[]");
 }
 
 EXTERN_C void __cxa_pure_virtual()
 {
-    PANIC("Exception: Invalid Pure Virtual Function");
+    kernel::PANIC("Exception: Invalid Pure Virtual Function");
 }
 
 
@@ -114,6 +114,11 @@ void* operator new[](size_t size)
 }
 
 void operator delete(void *p)
+{
+    free(p);
+}
+
+void operator delete(void *p, size_t s)
 {
     free(p);
 }

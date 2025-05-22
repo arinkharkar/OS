@@ -4,6 +4,8 @@
 #include <fermion.h>
 #include "x86.h"
 
+
+
 namespace kernel {
 
 namespace gdt {
@@ -42,7 +44,10 @@ typedef struct {
     // next 8 bits of the base
     uint8_t  base_8_bits;
     // 8 bits for the access
+    union {
     AccessByte access_byte;
+    uint8_t access_byte_raw;
+    };
     //first 4 bits are the last part of the limit, last 4 bits are the flags
     uint8_t limit : 4;
     uint8_t flags : 4;
@@ -98,6 +103,8 @@ inline Flags operator&(Flags a, Flags b) {
     return static_cast<uint8_t>(a) & static_cast<uint8_t>(b) ? b : Flags::none;
 }
 
+
+EXTERN_C void __load_gdt(GdtDescriptor64* descriptor);
 
 class GDT {
 private:

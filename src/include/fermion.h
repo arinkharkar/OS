@@ -3,17 +3,16 @@
 #include <fstring>
 #define EXTERN_C extern "C"
 
-// This just defines NORETURN so that it is standard between C and C++ and across compilers
 #define NORETURN [[noreturn]]
 
 
 // Check we are compiling on the correct system
 #ifdef __i386__
-#error "Fermion only support x86_64, this compiler is currently using i386 (x86_32)"
+#error "Fermion only supports x86_64, this compiler is currently using i386 (x86_32)"
 #endif
 
 #ifdef __arm__
-#error "Fermion only support x86_64, this compiler is currently using ARM (arm32)"
+#error "Fermion only supports x86_64, this compiler is currently using ARM (arm32)"
 #endif
 
 #ifdef __aarch64__
@@ -36,11 +35,12 @@
 
 typedef unsigned char byte;
 
-typedef enum {
-    result_error = 0,
-    result_success = 1
-} result;
+enum class result {
+    error = 0,
+    success = 1
+};
 
+namespace kernel {
 
 NORETURN void PANIC(const char* str, ...);
 
@@ -55,4 +55,6 @@ static inline void enable_interupts() {
     #ifdef __x86_64__
     asm volatile ("sti"); 
     #endif
+}
+
 }

@@ -13,17 +13,25 @@ namespace gdt {
     result GDT::enable() {
         // the first entry needs to be a zero entry
         create_zero_entry(0);
-        // the next to span the whole address space, the base and limit values are irrelavant here as x86_64 always has these span the 18.4 exabytes (LOL)
+        // the next 2 entries span the whole address space, the base and limit values are irrelavant here as x86_64 always has these span the 18.4 exabytes (LOL)
         create_entry(1, 0, UINT32_MAX, PermissionLevel::kernel_only, SegmentType::code, ReadWritePermissions::readable);
         create_entry(2, 0, UINT32_MAX, PermissionLevel::kernel_only, SegmentType::data, ReadWritePermissions::writeable);
+
+        // Now, create the GDT descriptor object which the CPU holds to know where the GDT is at all times
+        m_pgdt_descriptor = new GdtDescriptor64;
+        m_pgdt_descriptor->offset = reinterpret_cast<uint64_t>(&m_pgdt_entries[0]);
+        // the size needs to be subtracted by 1
+        m_pgdt_descriptor->size = sizeof(GdtSegment64) * m_num_gdt_entries - 1;
+        __load_gdt(m_pgdt_descriptor);
+        return result::success;
     }
 
     result GDT::create_entry(int gdt_offset, size_t base, size_t limit, PermissionLevel permission_level, SegmentType segment_type, ReadWritePermissions permissions) {
         // if the offset is greater than the number of entries we initialized, error
         if (gdt_offset >= m_num_gdt_entries)
-            return result::result_error;
+            return result::error;
         if (base > limit)
-            return result::result_error;
+            return result::error;
         // the limit value is 20 bits, this value needs to be bitshifted by 12
         limit = limit >> 12;
         /* set the base values*/
@@ -40,7 +48,26 @@ namespace gdt {
         m_pgdt_entries[gdt_offset].flags = 0;
         m_pgdt_entries[gdt_offset].flags = static_cast<uint8_t>(Flags::long_mode | Flags::granularity);
 
-        return result::result_success;
+        return result::success;
+    }
+
+    result GDT::create_zero_entry(int gdt_offset) {
+        if (gdt_offset >= m_num_gdt_entries)
+            return result::error;
+        uint32_t base = 0;
+        uint32_t limit = 0;
+        m_pgdt_entries[gdt_offset].base_16_bits = (uint16_t)base;
+        m_pgdt_entries[gdt_offset].base_8_bits = (uint8_t)(base >> 16);
+        m_pgdt_entries[gdt_offset].base_last_bits = (uint8_t)(base >> 24);
+
+        /* set the limit values */
+        m_pgdt_entries[gdt_offset].limit_16_bits = (uint16_t)limit;
+        m_pgdt_entries[gdt_offset].limit = (uint16_t)limit;
+
+
+        m_pgdt_entries[gdt_offset].access_byte_raw = 0;
+        m_pgdt_entries[gdt_offset].flags = 0;
+        return result::success;
     }
 
     AccessByte GDT::create_access_byte(PermissionLevel permission_level, SegmentType segment_type, ReadWritePermissions permissions) {
