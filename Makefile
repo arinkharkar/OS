@@ -5,7 +5,8 @@ CC = x86_64-w64-mingw32-gcc
 CXX=x86_64-w64-mingw32-g++
 ASM=x86_64-w64-mingw32-as
 LD=x86_64-w64-mingw32-gcc
-CFLAGS = -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -I/usr/include/efi -I/usr/include/efi/x86_64 -Isrc/include -Isrc/stl -c
+CFLAGS = -ffreestanding -mno-red-zone -fno-pie -fno-exceptions -fno-rtti -I/usr/include/efi -I/usr/include/efi/x86_64 -Isrc/uefi -Isrc/include -Isrc/libccpp -c
+ASMFLAGS = -fno-pie
 LDFLAGS = -nostdlib -Wl,-dll -shared -Wl,--subsystem,10 -e efi_main
 
 # Paths

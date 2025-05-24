@@ -2,13 +2,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <fermion.h>
-#include "x86.h"
 
 
 
 namespace kernel {
 
-namespace gdt {
+namespace x86 {
 /*
  The GDT is set up super weirdly to maintain backwards compatibility, sadly this makes our lives a bit harder
  Even more weirdly, the 'limit' value (how far from the base this gdt segment is valid) is only 20 bits long, so you must specify you want to have 4kb granularity 
@@ -49,14 +48,18 @@ typedef struct {
     uint8_t access_byte_raw;
     };
     //first 4 bits are the last part of the limit, last 4 bits are the flags
-    uint8_t limit : 4;
-    uint8_t flags : 4;
+    uint8_t limit_and_flags;
     // last 8 bits of the base
     uint8_t base_last_bits;
 
 } __attribute__((packed)) GdtSegment64;
 
-
+struct GDT_full {
+    GdtSegment64 null;
+    GdtSegment64 kernel_code;
+    GdtSegment64 kernel_data;
+}  __attribute__((packed))
+__attribute__((aligned(0x1000)));
 
 // when calling lgdt, we pass base as the start of our gdt and limit as the size of it
 typedef struct {
@@ -104,7 +107,7 @@ inline Flags operator&(Flags a, Flags b) {
 }
 
 
-EXTERN_C void __load_gdt(GdtDescriptor64* descriptor);
+EXTERN_C void __load_gdt(GdtDescriptor64* descriptor, void* jump_address);
 
 class GDT {
 private:

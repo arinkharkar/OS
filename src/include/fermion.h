@@ -46,6 +46,8 @@ NORETURN void PANIC(const char* str, ...);
 
 NORETURN void PANIC(const fstd::string& str, ...);
 
+void printk(const char* str, ...);
+
 static inline void disable_interupts() { 
     #ifdef __x86_64__
     asm volatile ("cli"); 

@@ -2,8 +2,11 @@
 
 #include "../cpu.h"
 #include "gdt.h"
+#include <uefi.h>
 
 namespace kernel {
+
+namespace x86 {
 
 enum class DPL {
     kernel_mode = 0,
@@ -13,14 +16,18 @@ enum class DPL {
 };
 
 class X86CPU : public CPU {
-    gdt::GDT* m_pgdt;
+private:
+    GDT* m_pgdt;
+public:
     X86CPU() {
-        m_pgdt = new gdt::GDT();
+        m_pgdt = new GDT();
+        printk("Intialized GDT");
     }
-    void initialize() override {
-        m_pgdt->enable();
+    result initialize() override {
+        return m_pgdt->enable();
     }
 };
 
+}
 
 }

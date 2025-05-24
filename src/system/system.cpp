@@ -5,9 +5,10 @@ namespace kernel {
 
 System::System() {
     #ifdef X86
-    m_pCPU = new X86CPU();
-    m_pmemory = new Memory();
+    m_pCPU = new x86::X86CPU();
     #endif
+
+    m_pmemory = new Memory();
 }
 
 result System::initalize() {

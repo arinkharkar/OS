@@ -8,7 +8,7 @@
 EXTERN_C EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 {
     // If we want to exit UEFI boot mode, delete this object
-    boot::UEFI_interface* uefi_interface = new boot::UEFI_interface(ImageHandle, SystemTable);
+   boot::UEFI_interface* uefi_interface = new boot::UEFI_interface(ImageHandle, SystemTable);
     uefi_interface->initialize();
     kernel::System* system = new kernel::System();
     system->initalize();
@@ -20,7 +20,7 @@ EXTERN_C EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTab
     EFI_TIME time;
     ST->RuntimeServices->GetTime(&time, nullptr);
     /* Say hi */
-    Status = ST->ConOut->OutputString(ST->ConOut, (CHAR16*)u"hello world"); // EFI Applications use Unicode and CRLF, a la Windows
+    Status = ST->ConOut->OutputString(ST->ConOut, (CHAR16*)(u"asdasd world")); // EFI Applications use Unicode and CRLF, a la Windows
     if (EFI_ERROR(Status))
         return Status;
 

@@ -1,6 +1,8 @@
 #pragma once
+#include <fermion.h>
+
 
 class CPU {
 public:
-    virtual void initialize() = 0;
+    virtual result initialize() = 0;
 };
